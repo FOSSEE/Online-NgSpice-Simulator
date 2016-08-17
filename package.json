@@ -1,0 +1,18 @@
+{
+  "name": "simulator",
+  "version": "1.0.0",
+  "description": "This application accept ngspice netlist",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fahim Khan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4",
+    "hogan-express": "^0.5.2",
+    "python-shell": "^0.4.0",
+    "shelljs": "^0.7.0",
+    "socket.io": "^1.4.5"
+  }
+}

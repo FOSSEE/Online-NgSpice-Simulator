@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{{title}}</title>
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="../css/bootstrap.min-3.3.6.css">
+
+    <!-- Custom styles for this template -->
+    <link href="../css/customstylesheet.css" rel="stylesheet">
+
+    <!--Favicon-->
+    <link rel="shortcut icon" href="../images/favicon.ico" />
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="../js/plotly-latest.min.js"></script>	
+
+</head>
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+     	<div class="container">
+        	<div class="navbar-header">
+          		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            	<span class="sr-only">Toggle navigation</span>
+            	<span class="icon-bar"></span>
+            	<span class="icon-bar"></span>
+            	<span class="icon-bar"></span>
+          		</button>
+          		<a class="navbar-brand" href="#">Online Simulator</a>
+        	</div>
+	        <div id="navbar" class="navbar-collapse collapse">
+	          <!--form class="navbar-form navbar-right">
+	            <div class="form-group">
+	              <input type="text" placeholder="Email" class="form-control">
+	            </div>
+	            <div class="form-group">
+	              <input type="password" placeholder="Password" class="form-control">
+	            </div>
+	            <button type="submit" class="btn btn-success">Sign in</button>
+	          </form-->
+	        </div><!--/.navbar-collapse -->
+	    </div>
+	</nav>
+
+	 <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="descNgspice">
+      <div class="container">
+        <h2>Ngspice</h2>
+        <p3>SPICE (Simulation Program with Integrated Circuit Emphasis) is a widely used tool for simulating electrical circuits. The original version was developed at the Electronics Research Laboratory of the University of California, Berkeley. Dozens of variations of SPICE exist, with both free and commercial versions available.
+
+		This site allows you to run ngspice simulations from a web browser environment. Whether you are using a Windows, Linux, or Mac computer, a smart phone, or a tablet, you always should be able to run a SPICE simulation.
+		</p3>
+      </div>
+    </div>
+
+
+	<div class="container">
+		<h2>Editor</h2>
+  		<p>Please write your ngspice netlist in the below editor.</p>
+  		<form role="form">
+    		<div class="form-group editorArea">
+    		
+      			<textarea class="form-control" id="netlist" rows="20"> 
+* Author: FOSSEE
+* Date:
+
+*Netlist Connection Information
+r1  in out 1k
+c1  out gnd 10u
+v1  in gnd pwl(0m 0 0.5m 5 50m 5 50.5m 0 100m 0)
+
+*Analysis information
+.tran 10e-03 100e-03 0e-03
+
+*Please do not remove this line
+.control
+	run
+.endc
+.end
+      			</textarea>
+
+    		</div>
+ 		</form>
+ 		<div class="buttonArea">
+			<button id="doSubmit" class="button">Submit</button>
+			<button id="doSaveNetlist" class="button">Save Netlist</button>
+			<button id="doClear" class="button">Clear Plots</button>
+		</div>
+		
+		<hr>
+		
+		<div id="messages">
+			<p class="fromServer">Server acknowledgement go here</p>
+		</div>
+
+		<div class="container" id="plot" style="display:none;">
+		<div class="row">
+			<div id="graph" style="width:600px;height:400px;" class="col-lg-6">
+				
+			</div>
+			<div id="plotfunction" class="col-lg-6">
+			</div>
+		</div>
+			
+		</div>
+	
+
+		<!-- <hr> -->
+
+
+
+		
+	</div>
+	<footer class="footer">
+			<div class="container">
+				<hr>
+				<div class="pull-right">
+					<p>&copy; 2016 FOSSEE, IIT Bombay</p>	
+				</div>
+			</div>
+    </footer> 
+
+
+	<script>
+		console.log("Client Started!!!");
+    	//var socket = io.connect('http://localhost:3000');
+    	var socket = io.connect();
+  		console.log("Socket Created!!!");
+  		socket.on('loadingPage', function (data) {
+  			console.log('Client : '+data);
+  			socket.emit('user',{socketID:socket.id});
+  		});
+
+  		var editorContent = document.getElementById("netlist");
+  		var submitButton = document.getElementById("doSubmit");
+		var saveButton = document.getElementById("doSaveNetlist");
+		var clearButton = document.getElementById("doClear");
+		var messages  = document.getElementById("messages");
+		var plotArea = document.getElementById("plotArea");
+
+		submitButton.addEventListener("click", function() {
+			var netlist = editorContent.value;
+			console.log("Netlist :"+editorContent.value);
+			messages.innerHTML = "";
+			socket.emit("netlist", netlist);
+			document.getElementById('plot').style.display = 'block';
+		});
+
+		clearButton.addEventListener("click",function(){
+			document.getElementById('plot').style.display = 'none';
+			messages.innerHTML = "";
+	
+		});
+
+		saveButton.addEventListener("click",function(){
+			var netlist = editorContent.value;
+			//  create a new Blob (html5 magic) that conatins the data from your form feild
+    		var textFileAsBlob = new Blob([netlist], {type:'text/plain'});
+        	
+        	var netListFileName = prompt('Enter name of netlist file to be saved');
+        	if(!netListFileName){
+        		alert("Please give the proper name");
+        	} 
+
+        	console.log(textFileAsBlob);
+
+        	// create a link for our script to 'click'
+    		var downloadLink = document.createElement("a");
+
+        	downloadLink.download = netListFileName+'.cir.out';
+
+        	// Link Name
+    		downloadLink.innerHTML = "Netlist Download Link";
+
+    		// allow our code to work in webkit & Gecko based browsers
+			// without the need for a if / else block.
+    		window.URL = window.URL || window.webkitURL;
+
+    		// Create the link Object.
+    		downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+			// when link is clicked call a function to remove it from
+			// the DOM in case user wants to save a second file.
+    		downloadLink.onclick = destroyClickedElement;
+			// make sure the link is hidden.
+    		downloadLink.style.display = "none";
+			// add the link to the DOM
+    		document.body.appendChild(downloadLink);
+    
+			// click the new link
+    		downloadLink.click();
+		
+
+		});
+
+		socket.on("serverMessage", function(message) {
+			// console.log("RECEIVED : " + message);
+			messages.innerHTML = "<br>" + message.stdout + "<br>"+message.stderr;
+			
+		});
+
+		socket.on("clearPlot",function(){
+			document.getElementById('plot').style.display = 'none';
+			messages.innerHTML = "";
+		});
+        
+		socket.on("plotData",function(data){
+			var keys = Object.keys(data);
+			var traceObj = {};
+			var traces = [];
+
+			console.log(Object.keys(data));
+
+			//Dynamically creating traces
+			for(var i=0; i<keys.length; i++){
+				if(keys[i]=='x-axis'){
+					continue;
+				}
+				else{
+					var trace = {
+						x: data['x-axis'],
+						y: data[keys[i]],
+						name:keys[i],
+						type: 'scatter'
+					};
+					traceObj[keys[i]] = trace;
+				}
+			}
+
+			var traceKey = Object.keys(traceObj);
+
+			for (var i=0;i<traceKey.length;i++) {
+  				var value = traceObj[traceKey[i]];
+  				traces.push(value);
+			}
+			console.log("traces :"+traces);
+			
+					
+			var dataForPlotly = traces;
+			
+			var layout = {
+				title:'Simulation Output',
+				yaxis: { title: "Voltage(Volts) / Current(Amp)"},      // set the y axis title
+				xaxis: {
+					title:"time(Sec) / Frequency(Hz)",
+					showgrid: true                 // remove the x-axis grid lines
+				},
+      			margin: {                           // update the left, bottom, right, top margin
+      				l: 40, b: 25, r: 10, t: 25
+      			}
+    		};
+
+    		Plotly.newPlot(document.getElementById('graph'), dataForPlotly, layout);
+
+		});
+
+        
+        function destroyClickedElement(event)
+		{
+			// remove the link from the DOM
+    		document.body.removeChild(event.target);
+		}
+
+		 		
+
+		
+
+	</script>
+</body>
+</html>
