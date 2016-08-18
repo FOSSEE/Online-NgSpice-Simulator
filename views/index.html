@@ -115,6 +115,8 @@ v1  in gnd pwl(0m 0 0.5m 5 50m 5 50.5m 0 100m 0)
 			<div class="container">
 				<hr>
 				<div class="pull-right">
+					<!-- <p style="text-align:center;">This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License.</a><br><a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank"><img src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a> </p>-->
+					
 					<p>&copy; 2016 FOSSEE, IIT Bombay</p>	
 				</div>
 			</div>
@@ -239,14 +241,24 @@ v1  in gnd pwl(0m 0 0.5m 5 50m 5 50.5m 0 100m 0)
 			
 			var layout = {
 				title:'Simulation Output',
-				yaxis: { title: "Voltage(Volts) / Current(Amp)"},      // set the y axis title
+				yaxis: { 
+						title: "Voltage(Volts) / Current(Amp)",      // set the y axis title
+						titlefont: {
+							family: 'Courier New, monospace',
+      						size: 15,
+      						color: '#7f7f7f'
+    					}
+
+				}, 
 				xaxis: {
-					title:"time(Sec) / Frequency(Hz)",
-					showgrid: true                 // remove the x-axis grid lines
-				},
-      			margin: {                           // update the left, bottom, right, top margin
-      				l: 40, b: 25, r: 10, t: 25
-      			}
+						title:"time(Sec) / Frequency(Hz)",
+						showgrid: true,                 // remove the x-axis grid lines
+						titlefont: {
+	      					family: 'Courier New, monospace',
+	      					size: 15,
+	      					color: '#7f7f7f'
+    					}
+				}
     		};
 
     		Plotly.newPlot(document.getElementById('graph'), dataForPlotly, layout);
