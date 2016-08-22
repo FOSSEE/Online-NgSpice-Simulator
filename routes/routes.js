@@ -73,7 +73,8 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
 		{
 			
 			//Adding Plot component in a file
-			sed('-i', 'run', 'run \n print allv > /tmp/plot_allv_'+socketID+'.txt \n print alli > /tmp/plot_alli_'+socketID+'.txt', fileName);
+			sed('-i', 'run', 'run \n print allv > /tmp/plot_allv_'+socketID+'.txt \n \
+				print alli > /tmp/plot_alli_'+socketID+'.txt', fileName);
 
 		}
 
