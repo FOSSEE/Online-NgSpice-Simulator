@@ -21,7 +21,15 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
 
   		socket.on('netlist',function(data){
   			netlistContent = data['netlist'];
-  			plotOption = data['plotOption'];
+  			
+  			//Remove blank space
+  			plotOption = data['plotOption'].trim();
+  			plotOption=plotOption.replace(/^(\r\n)|(\n)/,'');
+			
+			if (plotOption == ''){
+				plotOption = 'allv';
+			}
+
 			console.log('Server : '+netlistContent);
 			console.log('Plot Option :'+plotOption);
 			// socket.emit('serverMessage','Recived message for client '+socketID);
@@ -66,9 +74,9 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
 
 		function addPlotDetails(fileName,plotOption)
 		{
-			plotOption=plotOption.replace(/^(\r\n)|(\n)/,'');
+			
 			//Adding Plot component in a file
-			sed('-i', 'run', 'run \n print '+plotOption.trim()+'> /tmp/plot_allv_'+socketID+'.txt \n' , fileName);
+			sed('-i', 'run', 'run \n print '+plotOption+'> /tmp/plot_allv_'+socketID+'.txt \n' , fileName);
 
 		}
 
