@@ -78,6 +78,12 @@ v1  in gnd pwl(0m 0 0.5m 5 50m 5 50.5m 0 100m 0)
 .endc
 .end
       			</textarea>
+      			<h3>Plots:</h3>
+      			<textarea class="form-control" id="plotOption" rows="1">
+v(in) v(out)      			
+      				
+      			</textarea>
+
 
     		</div>
  		</form>
@@ -139,12 +145,14 @@ v1  in gnd pwl(0m 0 0.5m 5 50m 5 50.5m 0 100m 0)
 		var clearButton = document.getElementById("doClear");
 		var messages  = document.getElementById("messages");
 		var plotArea = document.getElementById("plotArea");
+		var plotVariable = document.getElementById("plotOption");
 
 		submitButton.addEventListener("click", function() {
 			var netlist = editorContent.value;
+			var plotOption = plotVariable.value;
 			console.log("Netlist :"+editorContent.value);
 			messages.innerHTML = "";
-			socket.emit("netlist", netlist);
+			socket.emit("netlist",{"netlist":netlist,"plotOption":plotOption});
 			document.getElementById('plot').style.display = 'block';
 		});
 

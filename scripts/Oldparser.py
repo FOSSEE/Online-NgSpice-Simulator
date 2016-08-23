@@ -9,27 +9,40 @@ import json
 from decimal import Decimal
 
 class DataExtraction:
-    def __init__(self,analysisInfo,plotFile):
+    def __init__(self,analysisInfo,VOLT_FILE,CURRENT_FILE):
         self.data = []
         self.analysisInfo = analysisInfo.split() #['.dc', 'v1', '-1e-00', '5e-00', '0.02e-00', 'i1', '-1e-03', '5e-03', '1e-03']
-        self.plotFile = plotFile
+        self.VOLT_FILE = VOLT_FILE
+        self.CURRENT_FILE = CURRENT_FILE
         self.val_dict = {}
         self.voltList = []
+        self.currentList = []
 
     def openFile(self):
         try:
-            with open(self.plotFile) as plotFile_reader:
-                self.allv = plotFile_reader.read()
+            with open(self.VOLT_FILE) as volt_reader:
+                self.allv = volt_reader.read()
             self.allv = self.allv.split("\n")
+
+            with open(self.CURRENT_FILE) as current_reader:
+                self.alli = current_reader.read()
+            self.alli = self.alli.split("\n")
 
         except Exception as e:
             print "Exception Message : ",str(e)
+
+        for line in self.alli[3].split(" "):
+            if len(line):
+                self.currentList.append(line)
+        self.currentList = self.currentList[2:]
+        #print "current list ----->", self.currentList
 
         for line in self.allv[3].split(" "):
             if len(line):
                 self.voltList.append(line)
         self.voltList = self.voltList[2:]
-        
+        #print "volt list ------>", self.voltList
+
         numberList = self.calculateNumbers()
         plotType = self.createDataList(numberList)
 
@@ -38,11 +51,15 @@ class DataExtraction:
 
     def calculateNumbers(self):
 
-        lines_number = partition_number = volt_number = 0
+        lines_number = partition_number = volt_number = current_number = 0
 
         for line in self.allv[3:]:
             if "Index" in line:
                 volt_number += 1
+
+        for line in self.alli[3:]:
+            if "#branch" in line:
+                current_number += 1
 
         self.dec = 0
 
@@ -76,21 +93,25 @@ class DataExtraction:
                 if "DC" in line:
                     break
 
-        
         volt_number //= partition_number
+        current_number //= partition_number
 
-        return [lines_number, volt_number]
+        return [lines_number, volt_number, current_number]
 
 
     def createDataList(self, numberList):
         lines_number = numberList[0] + 1
         volt_number = numberList[1]
+        current_number = numberList[2]
+
         dec = [self.analysisType, self.dec]
 
         vnum = len(self.allv[5].split("\t"))
-        
+        inum = len(self.alli[5].split("\t"))
+
         len_volt = len(self.voltList)
-        
+        len_current = len(self.currentList)
+
         full_data = []
 
         #creating data
@@ -102,9 +123,37 @@ class DataExtraction:
             self.voltList.pop(len_volt)
             len_volt = len(self.voltList)
 
-        
+        for i in xrange(1, current_number):
+            for line in self.alli[3+i*lines_number].split(" "):
+                if len(line) > 0:
+                    self.currentList.append(line)
+            self.currentList.pop(len_current)
+            self.currentList.pop(len_current)
+            len_current = len(self.currentList)
+
         p = k = m = 0
 
+        for line in self.alli[5:lines_number-1]:
+            if len(line.split("\t")) == inum:
+                j2 = line.split("\t")
+                j2.pop(0)
+                j2.pop(0)
+                j2.pop()
+                if self.analysisType == 0:
+                    j2.pop()
+
+                for i in xrange(1, current_number):
+                    j3 = self.alli[5+i*lines_number+k].split("\t")
+                    j3.pop(0)
+                    j3.pop(0)
+                    if self.analysisType == 0:
+                        j3.pop()
+                    j3.pop()
+                    j2 = j2 + j3
+
+                full_data.append(j2)
+
+            k += 1
 
         for line in self.allv[5:lines_number-1]:
             if len(line.split("\t")) == vnum:
@@ -124,7 +173,7 @@ class DataExtraction:
 
                     j1.pop()
                     j = j + j1
-                # j = j + full_data[m] ## Not required as we are not adding alli
+                j = j + full_data[m]
                 m += 1
                 j = "\t".join(j[1:])
                 j = j.replace(",", "")
@@ -133,7 +182,7 @@ class DataExtraction:
             p += 1
 
         self.volts_length = len(self.voltList)
-        self.voltList = self.voltList #+ self.currentList
+        self.voltList = self.voltList + self.currentList
 
         #print dec
         return dec
@@ -162,8 +211,9 @@ class DataExtraction:
 
 def main():
     analysisInfo = sys.argv[1]
-    plotFile = sys.argv[2]
-    app = DataExtraction(analysisInfo,plotFile)
+    VOLT_FILE = sys.argv[2]
+    CURRENT_FILE = sys.argv[3]
+    app = DataExtraction(analysisInfo,VOLT_FILE,CURRENT_FILE)
     app.openFile()
     app.computeAxes()
     

@@ -12,7 +12,6 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
 	io.on('connection', function (socket) {
 		socketID = getSocketID(socket);
 		var plot_allv_file = '/tmp/plot_allv_'+socketID.toLowerCase()+'.txt'
-		var plot_alli_file = '/tmp/plot_alli_'+socketID.toLowerCase()+'.txt'
 		var fileName = '/tmp/'+socketID+'.cir.out';
   		socket.emit('loadingPage', 'User with socket ID '+socket.id+' is Connected');
   		
@@ -20,8 +19,11 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
   			console.log('Socket ID : '+data['socketID']);
   		});
 
-  		socket.on('netlist',function(netlistContent){
+  		socket.on('netlist',function(data){
+  			netlistContent = data['netlist'];
+  			plotOption = data['plotOption'];
 			console.log('Server : '+netlistContent);
+			console.log('Plot Option :'+plotOption);
 			// socket.emit('serverMessage','Recived message for client '+socketID);
 			fs.writeFile(fileName, netlistContent, function (err) {
 				if (err){
@@ -30,7 +32,7 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
   				console.log('File is stored at '+fileName);
   				fs.exists(fileName, function(exists) {
     				if (exists) {
-      					addPlotDetails(fileName);
+      					addPlotDetails(fileName,plotOption);
       					executeNgspiceNetlist(fileName);
       					
     				}
@@ -58,23 +60,15 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
 				}
 			});
 
-			fs.exists(plot_alli_file, function(exists) {
-				// console.log("Check Plot alli "+plot_alli_file)
-				if (exists) {
-					console.log("Check Plot alli files")
-					//Deleting plot alli file
-					deleteNetlistFile(plot_alli_file);
-				}
-			});
+			
 
 		});
 
-		function addPlotDetails(fileName)
+		function addPlotDetails(fileName,plotOption)
 		{
-			
+			plotOption=plotOption.replace(/^(\r\n)|(\n)/,'');
 			//Adding Plot component in a file
-			sed('-i', 'run', 'run \n print allv > /tmp/plot_allv_'+socketID+'.txt \n \
-				print alli > /tmp/plot_alli_'+socketID+'.txt', fileName);
+			sed('-i', 'run', 'run \n print '+plotOption.trim()+'> /tmp/plot_allv_'+socketID+'.txt \n' , fileName);
 
 		}
 
@@ -113,7 +107,6 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
 
 		function parsePlotData(){
 			console.log("Ngspice netlist executed successfully "+fileName);
-			// console.log("Allv :"+plot_allv_file)
 			//socket.emit('serverMessage','Ngspice netlist executed successfully: ');	
 			//var analysisInfo = grep('.tran|.dc|.ac', fileName); //Not reliable
 			var analysisInfo = getAnalysisInfo(fileName);
@@ -123,7 +116,7 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
   				pythonPath: pyEnv,
   				pythonOptions: ['-u'],
   				scriptPath: scriptPath,
-  				args: [analysisInfo, plot_allv_file, plot_alli_file]
+  				args: [analysisInfo, plot_allv_file]
 			};
  
 			PythonShell.run('parser.py', options, function (err, results) {
