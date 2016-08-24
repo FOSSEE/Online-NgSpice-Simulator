@@ -1,0 +1,76 @@
+ 
+* Author: FOSSEE
+* Date:
+
+.subckt scr 3 7 1 
+* /opt/esim/src/subcircuitlibrary/scr/scr.cir
+.model PowerDiode D(
++ Vj=.75
++ Cjo=175p
++ Rs=.25
++ Eg=1.11
++ M=.5516
++ Nbv=1.6989
++ N=1
++ bv=1800
++ Fc=.5
++ Ikf=0
++ Ibv=20.245m
++ Is=2.2E-15
++ Xti=3)
+* f2
+d1 5 2 PowerDiode
+c1  3 9 10u
+* f1
+v1 8 4  dc 0
+v2 6 5  dc 0
+* u1  9 1 6 aswitch
+r1  7 8 50
+r2  3 9 1
+Vf2 2 3 0
+f2 3 9 Vf2 100
+Vf1 4 3 0
+f1 3 9 Vf1 10
+a1 9 (1 6)  u1
+* Schematic Name: aswitch, NgSpice Name: aswitch
+.model u1 aswitch(log=TRUE cntl_off=0.0 cntl_on=1.0 r_on=1.0 r_off=1.0e12 )
+* Control Statements
+
+.ends scr
+.model PowerDiode D(
++ Vj=.75
++ Cjo=175p
++ Rs=.25
++ Eg=1.11
++ M=.5516
++ Nbv=1.6989
++ N=1
++ bv=1800
++ Fc=.5
++ Ikf=0
++ Ibv=20.245m
++ Is=2.2E-15
++ Xti=3)
+x1 gnd pulse out2 scr
+v1  in1 in2 sine(0 200 100 0 0)
+v2  pulse gnd pulse(0 5 2m 0 0 1m 5m)
+d1 in1 out1 PowerDiode
+d3 in2 out1 PowerDiode
+d2 gnd in1 PowerDiode
+d4 gnd in2 PowerDiode
+r1  out1 out2 100
+* u1  in1 in2 plot_v2
+* u3  pulse plot_v1
+* u2  out1 out2 plot_v2
+.tran 20e-06 20e-03 0e-03
+
+* Control Statements 
+.control
+run
+print allv > plot_data_v.txt
+print alli > plot_data_i.txt
+plot v(in1,in2)
+plot v(pulse)
+plot v(out1,out2)
+.endc
+.end

@@ -1,0 +1,23 @@
+ 
+* Author: FOSSEE
+* Date:
+
+.model J2N3819	NJF(Beta=1.304m Betatce=-.5 Rd=1 Rs=1 Lambda=2.25m Vto=-3
++		Vtotc=-2.5m Is=33.57f Isr=322.4f N=1 Nr=2 Xti=3 Alpha=311.7u
++		Vk=243.6 Cgd=1.6p M=.3622 Pb=1 Fc=.5 Cgs=2.414p Kf=9.882E-18
++		Af=1)
+j1 id net-_j1-pad2_ gnd J2N3819
+vds1 net-_u_id1-pad1_ gnd  dc 10
+vgs1 net-_j1-pad2_ gnd  dc 0
+* u_id1  net-_u_id1-pad1_ id plot_i2
+v_u_id1 net-_u_id1-pad1_ id 0
+.dc vds1 0e-00 50e-00 10e-00 vgs1 0e-03 5e-03 1e-03
+
+* Control Statements 
+.control
+run
+print allv > plot_data_v.txt
+print alli > plot_data_i.txt
+plot i(v_u_id1)
+.endc
+.end

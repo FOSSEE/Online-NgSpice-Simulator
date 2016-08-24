@@ -1,0 +1,85 @@
+ 
+* Author: FOSSEE
+* Date:
+
+.subckt triac 8 11 10 
+* /opt/esim/src/subcircuitlibrary/triac/triac.cir
+.model PowerDiode D(
++ Vj=.75
++ Cjo=175p
++ Rs=.25
++ Eg=1.11
++ M=.5516
++ Nbv=1.6989
++ N=1
++ bv=1800
++ Fc=.5
++ Ikf=0
++ Ibv=20.245m
++ Is=2.2E-15
++ Xti=3)
+* f3
+v3 7 2  dc 0
+* f2
+v2 6 3  dc 0
+c1  8 9 10u
+* f1
+v1 10 4  dc 0
+* u1  9 11 6 aswitch
+* u2  9 2 11 aswitch
+r1  8 9 1
+d1 5 8 PowerDiode
+d2 1 7 PowerDiode
+Vf3 1 8 0
+f3 8 9 Vf3 10
+Vf2 3 5 0
+f2 8 9 Vf2 10
+Vf1 4 8 0
+f1 8 9 Vf1 100
+a1 9 (11 6)  u1
+a2 9 (2 11)  u2
+* Schematic Name: aswitch, NgSpice Name: aswitch
+.model u1 aswitch(log=TRUE cntl_off=0.1 cntl_on=1 r_on=0.0125 r_off=1000000 )
+* Schematic Name: aswitch, NgSpice Name: aswitch
+.model u2 aswitch(log=TRUE cntl_off=-0.1 cntl_on=-1 r_on=0.0125 r_off=1000000 )
+
+* Control Statements
+
+.ends triac
+.subckt diac 1 2 
+* /opt/esim/src/subcircuitlibrary/diac/diac.cir
+* u1  1 1 2 aswitch
+* u2  1 1 2 aswitch
+a1 1 (1 2)  u1
+a2 1 (1 2)  u2
+* Schematic Name: aswitch, NgSpice Name: aswitch
+.model u1 aswitch(log=TRUE cntl_off=0.1 cntl_on=25 r_on=0.0125 r_off=1000000 )
+* Schematic Name: aswitch, NgSpice Name: aswitch
+.model u2 aswitch(log=TRUE cntl_off=-0.1 cntl_on=-25 r_on=0.0125 r_off=1000000 )
+
+* Control Statements
+
+.ends diac
+c2  net-_c2-pad1_ gnd 0.1u
+c1  net-_c1-pad1_ gnd 0.1u
+r3  net-_c1-pad1_ net-_c2-pad1_ 250
+r2  in net-_c1-pad1_ 10k
+r1  in out 100
+v1  in gnd sine(0 100 100 0 0)
+x2 gnd out net-_x1-pad2_ triac
+x1 net-_c2-pad1_ net-_x1-pad2_ diac
+* u1  in plot_v1
+* u2  out plot_v1
+* u3  in out plot_v2
+.tran 20e-06 20e-03 0e-03
+
+* Control Statements 
+.control
+run
+print allv > plot_data_v.txt
+print alli > plot_data_i.txt
+plot v(in)
+plot v(out)
+plot v(in,out)
+.endc
+.end	

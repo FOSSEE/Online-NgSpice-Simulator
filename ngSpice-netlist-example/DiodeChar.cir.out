@@ -1,0 +1,22 @@
+ 
+* Author: FOSSEE
+* Date:
+
+.model 1n4148 D(is=2.495E-09 rs=4.755E-01 n=1.679E+00 tt=3.030E-09 cjo=1.700E-12 vj=1 m=1.959E-01 bv=1.000E+02 ibv=1.000E-04)
+v1 in gnd  dc 1
+d1 in out 1N4148
+r1  net-_r1-pad1_ gnd 1k
+* u1  out net-_r1-pad1_ plot_i2
+v_u1 out net-_r1-pad1_ 0
+* Schematic Name: zener, NgSpice Name: zener
+.model u1 zener(n_forward=1.0 v_breakdown=5.6 i_sat=1.0e-12 limit_switch=FALSE i_breakdown=2.0e-2 ) 
+.dc v1 0e-00 1e-00 0.01e-00
+
+* Control Statements 
+.control
+run
+print allv > plot_data_v.txt
+print alli > plot_data_i.txt
+plot i(v_u1)
+.endc
+.end

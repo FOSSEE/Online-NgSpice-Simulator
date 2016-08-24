@@ -1,0 +1,23 @@
+ 
+* Author: FOSSEE
+* Date:
+
+.model 1n4148 D(is=2.495E-09 rs=4.755E-01 n=1.679E+00 tt=3.030E-09 cjo=1.700E-12 vj=1 m=1.959E-01 bv=1.000E+02 ibv=1.000E-04)
+v1  in gnd sine(0 5 50 0 0)
+d1 gnd out 1N4148
+d2 out gnd 1N4148
+r1  in out 1k
+* u1  in plot_v1
+* u2  out plot_v1
+.tran 10e-03 100e-03 0e-00
+
+* Control Statements 
+.control
+run
+print allv > plot_data_v.txt
+print alli > plot_data_i.txt
+plot v(in)
+plot v(out)
+.endc
+.end
+      			

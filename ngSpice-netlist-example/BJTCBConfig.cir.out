@@ -1,0 +1,26 @@
+ 
+* Author: FOSSEE
+* Date:
+
+.model Q2N2222  NPN( Is=14.34f Xti=3 Eg=1.11 Vaf=74.03 Bf=400 Ne=1.307 
++ Ise=14.34f Ikf=.2847 Xtb=1.5 Br=6.092 Nc=2 Isc=0 Ikr=0 Rc=1 Cjc=7.306p 
++ Mjc=.3416 Vjc=.75 Fc=.5 Cje=22.01p Mje=.377 Vje=.75 Tr=46.91n Tf=411.1p 
++ Itf=.6 Vtf=1.7 Xtf=3 Rb=10) 
+q1 net-_q1-pad1_ gnd net-_q1-pad3_ Q2N2222
+v1 vcb gnd  dc 12
+r1  net-_r1-pad1_ net-_q1-pad1_ 1k
+r2  net-_q1-pad3_ ie 1k
+* u_ic1  vcb net-_r1-pad1_ plot_i2
+i1 ie gnd  dc 20m
+v_u_ic1 vcb net-_r1-pad1_ 0
+.dc v1 -1e-00 5e-00 0.02e-00 i1 -1e-03 5e-03 1e-03
+
+* Control Statements 
+.control
+run
+print allv > plot_data_v.txt
+print alli > plot_data_i.txt
+plot i(v_u_ic1)
+.endc
+.end
+      			

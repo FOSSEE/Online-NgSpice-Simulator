@@ -1,0 +1,36 @@
+ 
+* Author: FOSSEE
+* Date:
+
+.model Q2N2222  NPN( Is=14.34f Xti=3 Eg=1.11 Vaf=74.03 Bf=400 Ne=1.307 
++ Ise=14.34f Ikf=.2847 Xtb=1.5 Br=6.092 Nc=2 Isc=0 Ikr=0 Rc=1 Cjc=7.306p 
++ Mjc=.3416 Vjc=.75 Fc=.5 Cje=22.01p Mje=.377 Vje=.75 Tr=46.91n Tf=411.1p 
++ Itf=.6 Vtf=1.7 Xtf=3 Rb=10) 
+v1 net-_r2-pad1_ gnd  dc 10
+v2 in gnd  ac 0.5 0
+c1  net-_c1-pad1_ net-_c1-pad2_ 40u
+c2  gnd net-_c2-pad2_ 100u
+c3  out net-_c3-pad2_ 40u
+q1 net-_c3-pad2_ net-_c1-pad2_ net-_c2-pad2_ Q2N2222
+r3  net-_c1-pad2_ gnd 50k
+r4  net-_c2-pad2_ gnd 1.5k
+r6  out gnd 1k
+r5  net-_r2-pad1_ net-_c3-pad2_ 2k
+r2  net-_r2-pad1_ net-_c1-pad2_ 200k
+r1  net-_c1-pad1_ in 50
+* u3  out plot_log
+* u2  out plot_phase
+* u1  in plot_v1
+.ac dec 100 10Hz 100Meg
+
+* Control Statements 
+.control
+run
+print allv > plot_data_v.txt
+print alli > plot_data_i.txt
+plot log(out)
+plot phase(out)
+plot v(in)
+.endc
+.end
+      			
