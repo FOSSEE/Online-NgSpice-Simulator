@@ -111,11 +111,6 @@ v(in) v(out)
 		</div>
 	
 
-		<!-- <hr> -->
-
-
-
-		
 	</div>
 	<footer class="footer">
 			<div class="container">
@@ -149,10 +144,22 @@ v(in) v(out)
 
 		submitButton.addEventListener("click", function() {
 			var netlist = editorContent.value;
-			var plotOption = plotVariable.value;
+			var plotDetails = plotVariable.value.split("\n");
+			// var plotDetails = plotOption.split("\n");
+			var plotList = [];			
+			for(var i = 0;i < plotDetails.length;i++){
+				if (plotDetails[i].trim()==""){
+					continue
+				}
+				else{
+					plotList.push(plotDetails[i].trim());	
+				}
+							
+    		}
+
 			console.log("Netlist :"+editorContent.value);
 			messages.innerHTML = "";
-			socket.emit("netlist",{"netlist":netlist,"plotOption":plotOption});
+			socket.emit("netlist",{"netlist":netlist,"plotList":plotList});
 			document.getElementById('plot').style.display = 'block';
 		});
 

@@ -22,16 +22,17 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
   		socket.on('netlist',function(data){
   			netlistContent = data['netlist'];
   			
-  			//Remove blank space
-  			plotOption = data['plotOption'].trim();
-  			plotOption=plotOption.replace(/^(\r\n)|(\n)/,'');
-			
-			if (plotOption == ''){
-				plotOption = 'allv';
-			}
+  			//Plotting List
+  			plotList = data['plotList'];
+  			console.log("PlotList----------->"+plotList);
+		
+			plotOption = plotList.join(" "); //Space is required between two plot
 
-			console.log('Server : '+netlistContent);
-			console.log('Plot Option :'+plotOption);
+			if (!plotOption.length>0){
+				plotOption='allv'
+			}
+			
+			
 			// socket.emit('serverMessage','Recived message for client '+socketID);
 			fs.writeFile(fileName, netlistContent, function (err) {
 				if (err){
@@ -76,7 +77,7 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
 		{
 			
 			//Adding Plot component in a file
-			sed('-i', 'run', 'run \n print '+plotOption+'> /tmp/plot_allv_'+socketID+'.txt \n' , fileName);
+			sed('-i', 'run', 'run \n print '+plotOption+' > /tmp/plot_allv_'+socketID+'.txt \n' , fileName);
 
 		}
 
@@ -132,7 +133,7 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
   				// results is an array consisting of messages collected during execution 
  			// console.log('results: %j', results);
  			var resultString = results[0];
- 			// console.log(resultString);
+ 			
  			//Emitting Data Points to client
  			socket.emit('plotData',resultString);
  			
