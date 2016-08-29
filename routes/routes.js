@@ -24,7 +24,7 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
   			
   			//Plotting List
   			plotList = data['plotList'];
-  			console.log("PlotList----------->"+plotList);
+  			// console.log("PlotList----------->"+plotList);
 		
 			plotOption = plotList.join(" "); //Space is required between two plot
 
@@ -116,6 +116,7 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
 
 		function parsePlotData(){
 			console.log("Ngspice netlist executed successfully "+fileName);
+			console.log("PlotList----------->"+plotList);
 			//socket.emit('serverMessage','Ngspice netlist executed successfully: ');	
 			//var analysisInfo = grep('.tran|.dc|.ac', fileName); //Not reliable
 			var analysisInfo = getAnalysisInfo(fileName);
@@ -132,10 +133,10 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
   			if (err) throw err;
   				// results is an array consisting of messages collected during execution 
  			// console.log('results: %j', results);
- 			var resultString = results[0];
+ 			var outData = results[0];
  			
  			//Emitting Data Points to client
- 			socket.emit('plotData',resultString);
+ 			socket.emit('plotData',{"outData":outData,"plotList":plotList});
  			
 			});
 		}

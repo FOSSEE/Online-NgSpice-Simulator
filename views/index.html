@@ -81,10 +81,7 @@ v1  in gnd pwl(0m 0 0.5m 5 50m 5 50.5m 0 100m 0)
       			<h3>Plots:</h3>
       			<textarea class="form-control" id="plotOption" rows="3">
 v(in) v(out)      			
-      				
-      			</textarea>
-
-
+    			</textarea>
     		</div>
  		</form>
  		<div class="buttonArea">
@@ -221,12 +218,28 @@ v(in) v(out)
 		});
         
 		socket.on("plotData",function(data){
-			var keys = Object.keys(data);
+			var outData = data['outData'];
+			plotList = data['plotList'];
+			console.log("PlotList---->"+plotList);
+			var keys = Object.keys(outData);
+			
+
+			nonStackPlot(keys,outData);
+		
+
+		});
+
+        
+        function destroyClickedElement(event)
+		{
+			// remove the link from the DOM
+    		document.body.removeChild(event.target);
+		}
+
+		function nonStackPlot(keys,outData)
+		{
 			var traceObj = {};
 			var traces = [];
-
-			console.log(Object.keys(data));
-
 			//Dynamically creating traces
 			for(var i=0; i<keys.length; i++){
 				if(keys[i]=='x-axis'){
@@ -234,8 +247,8 @@ v(in) v(out)
 				}
 				else{
 					var trace = {
-						x: data['x-axis'],
-						y: data[keys[i]],
+						x: outData['x-axis'],
+						y: outData[keys[i]],
 						name:keys[i],
 						type: 'scatter'
 					};
@@ -244,15 +257,10 @@ v(in) v(out)
 			}
 
 			var traceKey = Object.keys(traceObj);
-
 			for (var i=0;i<traceKey.length;i++) {
   				var value = traceObj[traceKey[i]];
   				traces.push(value);
 			}
-			console.log("traces :"+traces);
-			
-					
-			var dataForPlotly = traces;
 			
 			var layout = {
 				title:'Simulation Output',
@@ -276,17 +284,9 @@ v(in) v(out)
 				}
     		};
 
-    		Plotly.newPlot(document.getElementById('graph'), dataForPlotly, layout);
+    		Plotly.newPlot(document.getElementById('graph'), traces, layout);
 
-		});
-
-        
-        function destroyClickedElement(event)
-		{
-			// remove the link from the DOM
-    		document.body.removeChild(event.target);
 		}
-
 		 		
 
 		
