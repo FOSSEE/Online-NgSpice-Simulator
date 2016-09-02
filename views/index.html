@@ -99,10 +99,10 @@ v(in) v(out)
 		<div class="container" id="plot" style="display:none;">
 		<div class="row">
 			<div id="graph" style="width:600px;height:400px;" class="col-lg-6">
+
 				
 			</div>
-			<div id="plotfunction" class="col-lg-6">
-			</div>
+			
 		</div>
 			
 		</div>
@@ -176,7 +176,7 @@ v(in) v(out)
         		alert("Please give the proper name");
         	} 
 
-        	console.log(textFileAsBlob);
+        	// console.log(textFileAsBlob);
 
         	// create a link for our script to 'click'
     		var downloadLink = document.createElement("a");
@@ -223,12 +223,9 @@ v(in) v(out)
 			console.log("PlotList---->"+plotList);
 			var keys = Object.keys(outData);
 			
-
-			nonStackPlot(keys,outData);
-		
-
+			nonStackPlot(keys,outData,plotList);
+			
 		});
-
         
         function destroyClickedElement(event)
 		{
@@ -236,7 +233,17 @@ v(in) v(out)
     		document.body.removeChild(event.target);
 		}
 
-		function nonStackPlot(keys,outData)
+		function nonStackPlot(keys,outData,PlotList)
+		{
+			traces = getTraces(keys,outData);	
+
+			var layout = getLayout(keys,plotList);	
+
+    		Plotly.newPlot(document.getElementById('graph'), traces, layout);
+
+		}
+
+		function getTraces(keys,outData)
 		{
 			var traceObj = {};
 			var traces = [];
@@ -261,36 +268,37 @@ v(in) v(out)
   				var value = traceObj[traceKey[i]];
   				traces.push(value);
 			}
-			
-			var layout = {
-				title:'Simulation Output',
-				yaxis: { 
-						title: "Voltage(Volts) / Current(Amp)",      // set the y axis title
-						titlefont: {
-							family: 'Courier New, monospace',
-      						size: 15,
-      						color: '#7f7f7f'
-    					}
+			return traces;
+		}
 
-				}, 
-				xaxis: {
-						title:"time(Sec) / Frequency(Hz)",
-						showgrid: true,                 // remove the x-axis grid lines
-						titlefont: {
-	      					family: 'Courier New, monospace',
-	      					size: 15,
-	      					color: '#7f7f7f'
-    					}
-				}
+		function getLayout(keys,PlotList)
+		{
+			var layout = {
+			  				
+							'title':'Simulation Output',
+							yaxis: { 
+										title: "Voltage(Volts) / Current(Amp)",      
+										titlefont: {
+														family: 'Courier New, monospace',
+      													size: 15,
+      													color: '#7f7f7f'
+    									}
+							}, 
+							xaxis: {
+										title:"time(Sec) / Frequency(Hz)",
+										showgrid: true,                 // remove the x-axis grid lines
+										titlefont: {
+	      												family: 'Courier New, monospace',
+	      												size: 15,
+	      												color: '#7f7f7f'
+    									}
+							}
     		};
 
-    		Plotly.newPlot(document.getElementById('graph'), traces, layout);
+			return layout;
 
 		}
-		 		
-
-		
-
+					 		
 	</script>
 </body>
 </html>
