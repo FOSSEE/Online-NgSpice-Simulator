@@ -11,4 +11,9 @@ body {
 
 .footer{
 	background: #222222;
+    position: fixed;
+    height: 50px;
+    bottom: 0;
+    width: 100%;
+
 }

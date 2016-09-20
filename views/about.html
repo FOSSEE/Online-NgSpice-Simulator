@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><%= title %></title>
+	<% include head.html %>
 </head>
 <body>
+	<header>
+		<% include header.html %>
+	</header>
 	<h1>About</h1>
 	<section>
 		<p>
@@ -13,6 +16,10 @@
 			The FOSSEE project is part of the National Mission on Education through Information and Communication Technology (ICT), Ministry of Human Resources and Development, Government of India.
 		</p>	
 	</section>
+
+	<footer class="footer">
+		<% include footer.html %>	
+	</footer>
 	
 </body>
 </html>
