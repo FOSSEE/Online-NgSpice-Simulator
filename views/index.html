@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>{{title}}</title>
+	<title><%= title %></title>
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="../css/bootstrap.min-3.3.6.css">
 
@@ -27,17 +27,24 @@
             	<span class="icon-bar"></span>
           		</button>
           		<a class="navbar-brand" href="#">Online Simulator</a>
+          		
         	</div>
 	        <div id="navbar" class="navbar-collapse collapse">
-	          <!--form class="navbar-form navbar-right">
-	            <div class="form-group">
-	              <input type="text" placeholder="Email" class="form-control">
-	            </div>
-	            <div class="form-group">
-	              <input type="password" placeholder="Password" class="form-control">
-	            </div>
-	            <button type="submit" class="btn btn-success">Sign in</button>
-	          </form-->
+	        	<ul class="nav navbar-nav">
+            		<li class="active"><a href="#">Home</a></li>
+            		<li><a href="/about">About</a></li>
+            		<li><a href="/contact">Contact</a></li>
+          		</ul>
+				<form class="navbar-form navbar-right">
+					<div class="form-group">
+					  <input type="text" placeholder="Email" class="form-control">
+					</div>
+					<div class="form-group">
+					  <input type="password" placeholder="Password" class="form-control">
+					</div>
+					<button type="submit" class="btn btn-success">Sign in</button>
+					<button type="submit" class="btn btn-success">Sign up</button>
+				</form
 	        </div><!--/.navbar-collapse -->
 	    </div>
 	</nav>
@@ -85,9 +92,9 @@ v(in) v(out)
     		</div>
  		</form>
  		<div class="buttonArea">
-			<button id="doSubmit" class="button">Submit</button>
-			<button id="doSaveNetlist" class="button">Save Netlist</button>
-			<button id="doClear" class="button">Clear Plots</button>
+			<button id="doSubmit" class="btn btn-success">Submit</button>
+			<button id="doSaveNetlist" class="btn btn-success">Save Netlist</button>
+			<button id="doClear" class="btn btn-danger">Clear Plots</button>
 		</div>
 		
 		<hr>

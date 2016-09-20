@@ -1,12 +1,23 @@
-module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
+module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){	
 	console.log("Server started!!! ");	
 
 	var router = express.Router();
 	var pyEnv = '/usr/bin/python'
 
+	/*Home Page*/
 	router.get('/',function(req,res,next){
         res.render('index',{host:app.get('host'),title:'Ngspice Simulator'});
     
+    });
+
+    /*About Page*/
+    router.get('/about',function(req,res,next){
+    	res.render('about',{title:'Ngspice Simulator'});
+    });
+
+    /*Contact Page*/
+    router.get('/contact',function(req,res,next){
+    	res.render('contact',{title:'Ngspice Simulator'});
     });
 
 	io.on('connection', function (socket) {

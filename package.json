@@ -9,8 +9,8 @@
   "author": "Fahim Khan",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^2.5.2",
     "express": "^4.13.4",
-    "hogan-express": "^0.5.2",
     "python-shell": "^0.4.0",
     "shelljs": "^0.7.0",
     "socket.io": "^1.4.5"

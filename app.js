@@ -4,7 +4,9 @@ var express = require('express'),
 	fs = require('fs'),
     os = require('os'),
     shelljs = require('shelljs/global'),
-    PythonShell = require('python-shell')
+    PythonShell = require('python-shell'),
+    ejs = require('ejs')
+    
 
 
 var app = express();
@@ -12,10 +14,13 @@ var app = express();
 var scriptPath = path.join(__dirname,'scripts')
 //Set views property
 app.set('views',path.join(__dirname,'views'));
-//set Template engine
-app.engine('html',require('hogan-express'));
+
 //Set it as View engine
 app.set('view engine','html');
+
+//set Template engine
+app.engine('html',ejs.renderFile);
+
 
 //Set Static public folder
 app.use(express.static(path.join(__dirname,'public')));
@@ -29,6 +34,7 @@ app.set('host',config.host);
 
 //Create server which listen app 
 var server = require('http').createServer(app);
+
 //Socket.io is invoked by passing server 
 var io = require('socket.io')(server);
 
