@@ -7,26 +7,30 @@
 	<header>
 		<% include header.html %>
 	</header>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-lg-offset-2">
+	 
+			    <div class="descNgspice">
+			        <h2>Ngspice</h2>
+			        <p3>SPICE (Simulation Program with Integrated Circuit Emphasis) is a widely used tool for simulating electrical circuits. The original version was developed at the Electronics Research Laboratory of the University of California, Berkeley. Dozens of variations of SPICE exist, with both free and commercial versions available.
 
-	 <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="descNgspice">
-      <div class="container">
-        <h2>Ngspice</h2>
-        <p3>SPICE (Simulation Program with Integrated Circuit Emphasis) is a widely used tool for simulating electrical circuits. The original version was developed at the Electronics Research Laboratory of the University of California, Berkeley. Dozens of variations of SPICE exist, with both free and commercial versions available.
-
-		This site allows you to run ngspice simulations from a web browser environment. Whether you are using a Windows, Linux, or Mac computer, a smart phone, or a tablet, you always should be able to run a SPICE simulation.
-		</p3>
-      </div>
+					This site allows you to run ngspice simulations from a web browser environment. Whether you are using a Windows, Linux, or Mac computer, a smart phone, or a tablet, you always should be able to run a SPICE simulation.
+					</p3>
+			    </div>
+    		</div>
+    	</div>
     </div>
 
-
 	<div class="container">
-		<h2>Editor</h2>
-  		<p>Please write your ngspice netlist in the below editor.</p>
-  		<form role="form">
-    		<div class="form-group editorArea">
-    		
-      			<textarea class="form-control" id="netlist" rows="20"> 
+		<div class="row">
+			<div class="col-lg-8 col-lg-offset-2">
+				<h2>Editor</h2>
+		  		<p>Please write your ngspice netlist in the below editor.</p>
+		  		<form role="form">
+		    		<div class="form-group editorArea">
+		    		
+		      			<textarea class="form-control" id="netlist" rows="20"> 
 * Author: FOSSEE
 * Date:
 
@@ -43,44 +47,41 @@ v1  in gnd pwl(0m 0 0.5m 5 50m 5 50.5m 0 100m 0)
 	run
 .endc
 .end
-      			</textarea>
-      			<h3>Plots:</h3>
-      			<textarea class="form-control" id="plotOption" rows="3">
+		      			</textarea>
+		      			<h3>Plots:</h3>
+		      			<textarea class="form-control" id="plotOption" rows="3">
 v(in) v(out)      			
-    			</textarea>
-    		</div>
- 		</form>
- 		<div class="buttonArea">
-			<button id="doSubmit" class="btn btn-success">Submit</button>
-			<button id="doSaveNetlist" class="btn btn-success">Save Netlist</button>
-			<button id="doClear" class="btn btn-danger">Clear Plots</button>
-		</div>
-		
-		<hr>
-		
-		<div id="messages">
-			<p class="fromServer">Server acknowledgement goes here</p>
-		</div>
-
-		<div class="container" id="plot" style="display:none;">
-		<div class="row">
-			<div id="graph" style="width:600px;height:400px;" class="col-lg-6">
-
+    					</textarea>
+    				</div>
+ 				</form>
+		 		<div class="buttonArea">
+					<button id="doSubmit" class="btn btn-success">Submit</button>
+					<button id="doSaveNetlist" class="btn btn-success">Save Netlist</button>
+					<button id="doClear" class="btn btn-danger">Clear Plots</button>
+				</div>
 				
+				<hr>
+				
+				<div id="messages">
+					<p class="fromServer">Server acknowledgement goes here</p>
+				</div>
+
+				<div class="container" id="plot" style="display:none;">
+					<div class="row">
+						<div id="graph" style="width:600px;height:400px;" class="col-lg-6">
+						
+						</div>
+						
+					</div>
+				</div>
 			</div>
-			
 		</div>
-			
-		</div>
-	
 	</div>
-	<div>
+	
 	<footer class="footer">
 		<% include footer.html %>	
-	</footer>
-	</div>
-
-
+	</footer>	
+	
 	<script>
 		console.log("Client Started!!!");
     	//var socket = io.connect('http://localhost:3000');
