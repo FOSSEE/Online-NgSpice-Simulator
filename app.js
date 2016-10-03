@@ -23,7 +23,7 @@ app.engine('html',ejs.renderFile);
 
 
 //Set Static public folder
-app.use('/static',express.static(path.join(__dirname,'public')));
+app.use('/ngStatic',express.static(path.join(__dirname,'public')));
 
 //Set Port to run the app
 app.set('port',process.env.PORT||3000);
