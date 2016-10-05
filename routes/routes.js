@@ -10,18 +10,18 @@ module.exports = function(express,app,fs,os,io,PythonShell,scriptPath){
     
     });
 
-    router.get('/index',function(req,res,next){
+    router.get('/ngspice/index',function(req,res,next){
         res.render('index',{host:app.get('host'),title:'Ngspice Simulator'});
     
     });
 
     /*About Page*/
-    router.get('/about',function(req,res,next){
+    router.get('/ngspice/about',function(req,res,next){
     	res.render('about',{title:'Ngspice Simulator'});
     });
 
     /*Contact Page*/
-    router.get('/contact',function(req,res,next){
+    router.get('/ngspice/contact',function(req,res,next){
     	res.render('contact',{title:'Ngspice Simulator'});
     });
 
