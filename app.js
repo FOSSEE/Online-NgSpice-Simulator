@@ -36,7 +36,7 @@ app.set('host',config.host);
 var server = require('http').createServer(app);
 
 //Socket.io is invoked by passing server 
-var io = require('socket.io')(server);
+var io = require('socket.io')(server, { path: '/ngsockets' });
 
 //Invokes routes.js
 require('./routes/routes.js')(express,app,fs,os,io,PythonShell,scriptPath);
